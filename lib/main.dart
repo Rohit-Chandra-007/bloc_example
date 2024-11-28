@@ -1,12 +1,30 @@
 import 'package:bloc_example/features/counter/bloc/counter_bloc.dart';
-import 'package:bloc_example/features/counter/ui/counter_screen.dart';
 import 'package:bloc_example/features/image_uploader/bloc/image_picker_bloc.dart';
+import 'package:bloc_example/features/switch_slider/bloc/switch_bloc.dart';
+import 'package:bloc_example/features/switch_slider/ui/switch_slider_screen.dart';
 import 'package:bloc_example/utils/image_picker_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ImagePickerBloc(
+            ImagePickerService(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CounterBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SwitchBloc(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,14 +33,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Image Picker',
+      title: 'Flutter Demo',
       theme: ThemeData.dark(),
-      home: MultiBlocProvider(providers: [
-        BlocProvider(
-          create: (context) => ImagePickerBloc(ImagePickerService()),
-        ),
-        BlocProvider(create: (context) => CounterBloc()),
-      ], child: CounterScreen()),
+      home: SwitchSliderScreen(),
     );
   }
 }
