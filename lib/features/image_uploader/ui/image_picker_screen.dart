@@ -1,6 +1,4 @@
 import 'package:bloc_example/features/image_uploader/bloc/image_picker_bloc.dart';
-import 'package:bloc_example/features/image_uploader/bloc/image_picker_event.dart';
-import 'package:bloc_example/features/image_uploader/bloc/image_picker_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,14 +15,29 @@ class ImagePickerScreen extends StatelessWidget {
         child: BlocBuilder<ImagePickerBloc, ImagePickerState>(
             builder: (context, state) {
           if (state.imageFile == null) {
-            return IconButton(
-              onPressed: () {
-                context.read<ImagePickerBloc>().add(CameraEvent());
-              },
-              icon: const Icon(
-                size: 48,
-                Icons.camera,
-              ),
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    context.read<ImagePickerBloc>().add(CameraEvent());
+                  },
+                  icon: const Icon(
+                    size: 48,
+                    Icons.camera,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    context.read<ImagePickerBloc>().add(GalleryEvent());
+                  },
+                  icon: const Icon(
+                    size: 48,
+                    Icons.photo,
+                  ),
+                ),
+              ],
             );
           } else {
             return Image.file(state.imageFile!);

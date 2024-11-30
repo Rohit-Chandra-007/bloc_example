@@ -21,6 +21,8 @@ class SwitchSliderScreen extends StatelessWidget {
               children: [
                 Text('Notifications'),
                 BlocBuilder<SwitchBloc, SwitchState>(
+                  buildWhen: (previous, current) =>
+                      previous.switchValue != current.switchValue,
                   builder: (context, state) {
                     return Switch(
                       value: state.switchValue,
@@ -36,6 +38,8 @@ class SwitchSliderScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             BlocBuilder<SwitchBloc, SwitchState>(
+              buildWhen: (previous, current) =>
+                  previous.sliderValue != current.sliderValue,
               builder: (context, state) {
                 return Container(
                   height: 300,
@@ -45,6 +49,8 @@ class SwitchSliderScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             BlocBuilder<SwitchBloc, SwitchState>(
+              buildWhen: (previous, current) =>
+                  previous.sliderValue != current.sliderValue,
               builder: (context, state) {
                 return Slider(
                   value: state.sliderValue,

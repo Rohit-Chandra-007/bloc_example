@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+part of 'image_picker_bloc.dart';
+
 
 @immutable
 sealed class ImagePickerEvent extends Equatable {

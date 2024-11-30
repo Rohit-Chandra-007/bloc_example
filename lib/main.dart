@@ -1,7 +1,7 @@
 import 'package:bloc_example/features/counter/bloc/counter_bloc.dart';
 import 'package:bloc_example/features/image_uploader/bloc/image_picker_bloc.dart';
 import 'package:bloc_example/features/switch_slider/bloc/switch_bloc.dart';
-import 'package:bloc_example/features/switch_slider/ui/switch_slider_screen.dart';
+import 'package:bloc_example/features/image_uploader/ui/image_picker_screen.dart';
 import 'package:bloc_example/utils/image_picker_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
-      home: SwitchSliderScreen(),
+      home: ImagePickerScreen(),
     );
   }
 }
