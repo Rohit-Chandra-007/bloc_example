@@ -6,13 +6,15 @@ class FavouriteItem extends Equatable {
   final String description;
   final bool isFavourite;
   final bool isDeleted;
+  final bool isSelected;
 
   const FavouriteItem({
     required this.id,
     required this.name,
     required this.description,
     this.isFavourite = false,
-    required this.isDeleted,
+    this.isDeleted = false,
+    this.isSelected = false,
   });
 
   FavouriteItem copyWith({
@@ -21,6 +23,7 @@ class FavouriteItem extends Equatable {
     String? description,
     bool? isFavourite,
     bool? isDeleted,
+    bool? isSelected,
   }) {
     return FavouriteItem(
       id: id ?? this.id,
@@ -28,9 +31,11 @@ class FavouriteItem extends Equatable {
       description: description ?? this.description,
       isFavourite: isFavourite ?? this.isFavourite,
       isDeleted: isDeleted ?? this.isDeleted,
+      isSelected: isSelected ?? this.isSelected,
     );
   }
 
   @override
-  List<Object?> get props => [id, name, description, isFavourite, isDeleted];
+  List<Object?> get props =>
+      [id, name, description, isFavourite, isDeleted, isSelected];
 }

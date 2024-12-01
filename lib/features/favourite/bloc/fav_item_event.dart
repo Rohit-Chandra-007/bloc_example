@@ -17,3 +17,14 @@ final class AddFavItem extends FavItemEvent {
   @override
   List<Object> get props => [favouriteItem];
 }
+
+class ToggleSelectionMode extends FavItemEvent {}
+
+class ToggleItemSelection extends FavItemEvent {
+  final String itemId;
+
+  const ToggleItemSelection({required this.itemId});
+
+  @override
+  List<Object> get props => [itemId];
+}

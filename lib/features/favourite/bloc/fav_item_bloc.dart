@@ -12,13 +12,31 @@ class FavItemBloc extends Bloc<FavItemEvent, FavItemState> {
   FavItemBloc(this.favouriteRepository) : super(FavItemInitial()) {
     on<FetchFavItem>(_fetchFavItem);
     on<AddFavItem>(_markFavourite);
+    on<ToggleSelectionMode>((event, emit) {
+      if (state is FavItemUpdated) {
+        emit(state.copyWith(isSelectionMode: !state.isSelectionMode));
+      }
+    });
+
+    on<ToggleItemSelection>((event, emit) {
+      if (state is FavItemUpdated) {
+        final updatedItems = state.favouriteItems.map((item) {
+          if (item.id == event.itemId) {
+            return item.copyWith(isSelected: !item.isSelected);
+          }
+          return item;
+        }).toList();
+
+        emit(state.copyWith(favouriteItems: updatedItems));
+      }
+    });
   }
 
   void _fetchFavItem(FetchFavItem event, Emitter<FavItemState> emit) async {
     emit(state.copyWith(status: ListStatus.loading));
     favouriteItems = await favouriteRepository.fetchFavouriteItem();
     if (state is FavItemUpdated) {
-      emit(FavItemUpdated(
+      emit(state.copyWith(
           favouriteItems: List.from(favouriteItems),
           status: ListStatus.success));
     }

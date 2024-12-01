@@ -10,7 +10,6 @@ class FavouriteRepository {
           id: index.toString(),
           name: 'Favourite Item ${index + 1}',
           description: 'Description for Favourite Item $index',
-          isDeleted: false,
         ),
       ),
     );

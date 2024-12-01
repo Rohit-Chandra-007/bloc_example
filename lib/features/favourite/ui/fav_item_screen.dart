@@ -43,13 +43,24 @@ class _FavItemScreenState extends State<FavItemScreen> {
                   ),
                   child: ListTile(
                     contentPadding: EdgeInsets.all(15),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        favItem.name[0],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                    leading: state.isSelectionMode
+                        ? Checkbox(
+                            value: favItem.isSelected,
+                            checkColor: Colors.white,
+                            activeColor: Colors.blue,
+                            onChanged: (value) {
+                              context.read<FavItemBloc>().add(
+                                    ToggleItemSelection(itemId: favItem.id),
+                                  );
+                            },
+                          )
+                        : CircleAvatar(
+                            backgroundColor: Colors.blue,
+                            child: Text(
+                              favItem.name[0],
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                     title: Text(
                       favItem.name,
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -67,12 +78,18 @@ class _FavItemScreenState extends State<FavItemScreen> {
                           description: favItem.description,
                           isFavourite: !favItem.isFavourite,
                           isDeleted: favItem.isDeleted,
+                          isSelected: favItem.isSelected,
                         );
                         context
                             .read<FavItemBloc>()
                             .add(AddFavItem(favouriteItem: favouriteItem));
                       },
                     ),
+                    onLongPress: () {
+                      context.read<FavItemBloc>().add(
+                            ToggleSelectionMode(),
+                          );
+                    },
                   ),
                 );
               },
