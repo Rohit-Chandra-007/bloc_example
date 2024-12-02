@@ -1,5 +1,4 @@
 import 'package:bloc_example/features/favourite/bloc/fav_item_bloc.dart';
-import 'package:bloc_example/features/favourite/model/fav_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,6 +21,21 @@ class _FavItemScreenState extends State<FavItemScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favourite Item App'),
+        actions: [
+          BlocBuilder<FavItemBloc, FavItemState>(
+            builder: (context, state) {
+              return Visibility(
+                visible: state.isSelectionMode,
+                child: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    context.read<FavItemBloc>().add(DeleteSelectedItems());
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<FavItemBloc, FavItemState>(
         bloc: BlocProvider.of<FavItemBloc>(context),
@@ -72,13 +86,8 @@ class _FavItemScreenState extends State<FavItemScreen> {
                           : Icon(Icons.favorite_border),
                       onPressed: () {
                         // Add your onPressed code here!
-                        final favouriteItem = FavouriteItem(
-                          id: favItem.id,
-                          name: favItem.name,
-                          description: favItem.description,
+                        final favouriteItem = favItem.copyWith(
                           isFavourite: !favItem.isFavourite,
-                          isDeleted: favItem.isDeleted,
-                          isSelected: favItem.isSelected,
                         );
                         context
                             .read<FavItemBloc>()

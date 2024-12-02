@@ -28,3 +28,5 @@ class ToggleItemSelection extends FavItemEvent {
   @override
   List<Object> get props => [itemId];
 }
+
+class DeleteSelectedItems extends FavItemEvent {}

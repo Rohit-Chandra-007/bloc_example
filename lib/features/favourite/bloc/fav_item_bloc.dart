@@ -12,24 +12,10 @@ class FavItemBloc extends Bloc<FavItemEvent, FavItemState> {
   FavItemBloc(this.favouriteRepository) : super(FavItemInitial()) {
     on<FetchFavItem>(_fetchFavItem);
     on<AddFavItem>(_markFavourite);
-    on<ToggleSelectionMode>((event, emit) {
-      if (state is FavItemUpdated) {
-        emit(state.copyWith(isSelectionMode: !state.isSelectionMode));
-      }
-    });
+    on<ToggleSelectionMode>(_toggleSelectItem);
 
-    on<ToggleItemSelection>((event, emit) {
-      if (state is FavItemUpdated) {
-        final updatedItems = state.favouriteItems.map((item) {
-          if (item.id == event.itemId) {
-            return item.copyWith(isSelected: !item.isSelected);
-          }
-          return item;
-        }).toList();
-
-        emit(state.copyWith(favouriteItems: updatedItems));
-      }
-    });
+    on<ToggleItemSelection>(_toggleItemSelection);
+    on<DeleteSelectedItems>(_onDeleteSelectedItems);
   }
 
   void _fetchFavItem(FetchFavItem event, Emitter<FavItemState> emit) async {
@@ -43,11 +29,47 @@ class FavItemBloc extends Bloc<FavItemEvent, FavItemState> {
   }
 
   void _markFavourite(AddFavItem event, Emitter<FavItemState> emit) {
-    final index = favouriteItems
-        .indexWhere((element) => element.id == event.favouriteItem.id);
-    favouriteItems[index] = event.favouriteItem;
     if (state is FavItemUpdated) {
-      emit(state.copyWith(favouriteItems: List.from(favouriteItems)));
+      final updatedItems = state.favouriteItems.map((item) {
+        if (item.id == event.favouriteItem.id) {
+          return item.copyWith(isFavourite: !item.isFavourite);
+        }
+        return item;
+      }).toList();
+
+      emit(state.copyWith(favouriteItems: updatedItems));
     }
+  }
+
+  void _toggleSelectItem(
+      ToggleSelectionMode event, Emitter<FavItemState> emit) {
+    if (state is FavItemUpdated) {
+      emit(state.copyWith(isSelectionMode: !state.isSelectionMode));
+    }
+  }
+
+  void _toggleItemSelection(
+      ToggleItemSelection event, Emitter<FavItemState> emit) {
+    if (state is FavItemUpdated) {
+      final updatedItems = state.favouriteItems.map((item) {
+        if (item.id == event.itemId) {
+          return item.copyWith(isSelected: !item.isSelected);
+        }
+        return item;
+      }).toList();
+
+      emit(state.copyWith(favouriteItems: updatedItems));
+    }
+  }
+
+  void _onDeleteSelectedItems(
+      DeleteSelectedItems event, Emitter<FavItemState> emit) {
+    final updatedItems =
+        state.favouriteItems.where((item) => !item.isSelected).toList();
+    emit(FavItemUpdated(
+      favouriteItems: updatedItems,
+      status: ListStatus.success,
+      isSelectionMode: false,
+    ));
   }
 }
