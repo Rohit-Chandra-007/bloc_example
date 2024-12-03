@@ -9,6 +9,7 @@ part 'post_state.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostRepository postRepository;
+  static const _pageSize = 10;
 
   PostBloc(this.postRepository) : super(PostInitialState()) {
     on<FetchPostEvent>(_fetchPostsApi);
@@ -16,9 +17,31 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   void _fetchPostsApi(FetchPostEvent event, Emitter<PostState> emit) async {
     try {
-      emit(state.copyWith(status: PostStatus.loading)); // Show loading state
-      final posts = await postRepository.fetchUsers();
-      emit(state.copyWith(postList: posts, status: PostStatus.success));
+      if (event.pageKey == 1) {
+        emit(state.copyWith(status: PostStatus.loading));
+      }
+
+      final posts = await postRepository.fetchUsers(
+        page: event.pageKey,
+        limit: _pageSize,
+      );
+      final isLastPage = posts.length < _pageSize; // check if it's last page
+
+      if (event.pageKey == 1) {
+        emit(state.copyWith(
+          status: PostStatus.success,
+          postList: posts,
+          hasReachedMax: isLastPage,
+          currentPage: event.pageKey,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: PostStatus.success,
+          postList: [...state.postList, ...posts],
+          hasReachedMax: isLastPage,
+          currentPage: event.pageKey,
+        ));
+      }
     } catch (error) {
       emit(state.copyWith(
           errorMessage: error.toString(), status: PostStatus.failure));

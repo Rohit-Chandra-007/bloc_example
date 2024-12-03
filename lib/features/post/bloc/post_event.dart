@@ -8,5 +8,8 @@ sealed class PostEvent extends Equatable {
 }
 
 class FetchPostEvent extends PostEvent {
-  const FetchPostEvent();
+  final int pageKey;
+  const FetchPostEvent({required this.pageKey});
+  @override
+  List<Object> get props => [pageKey];
 }
