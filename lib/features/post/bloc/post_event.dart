@@ -13,3 +13,12 @@ class FetchPostEvent extends PostEvent {
   @override
   List<Object> get props => [pageKey];
 }
+
+class SearchPostEvent extends PostEvent {
+  final String query;
+  final int pageKey;
+  const SearchPostEvent({required this.query, required this.pageKey});
+  
+  @override
+  List<Object> get props => [query, pageKey];
+}

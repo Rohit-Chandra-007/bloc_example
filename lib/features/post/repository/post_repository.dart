@@ -4,14 +4,25 @@ import 'package:dio/dio.dart';
 class PostRepository {
   final Dio _dio = Dio();
 
-  Future<List<PostModel>> fetchUsers({int page = 1, int limit = 10}) async {
+  Future<List<PostModel>> fetchUsers({
+    int page = 1,
+    int limit = 10,
+    String? searchQuery,
+  }) async {
     try {
+      final queryParams = <String, String>{
+        '_page': page.toString(),
+        '_limit': limit.toString(),
+      };
+
+      if (searchQuery != null && searchQuery.isNotEmpty) {
+        // Add search filter to query parameters
+        queryParams['q'] = searchQuery;
+      }
+
       final response = await _dio.get(
         'https://jsonplaceholder.typicode.com/comments',
-        queryParameters: {
-          '_page': page,
-          '_limit': limit,
-        },
+        queryParameters: queryParams,
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;

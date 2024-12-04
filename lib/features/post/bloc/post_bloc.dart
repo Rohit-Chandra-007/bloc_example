@@ -13,6 +13,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   PostBloc(this.postRepository) : super(PostInitialState()) {
     on<FetchPostEvent>(_fetchPostsApi);
+    on<SearchPostEvent>(_searchPosts);
   }
 
   void _fetchPostsApi(FetchPostEvent event, Emitter<PostState> emit) async {
@@ -45,6 +46,43 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (error) {
       emit(state.copyWith(
           errorMessage: error.toString(), status: PostStatus.failure));
+    }
+  }
+
+  void _searchPosts(SearchPostEvent event, Emitter<PostState> emit) async {
+    try {
+      if (event.pageKey == 1) {
+        emit(state.copyWith(status: PostStatus.loading));
+      }
+
+      final posts = await postRepository.fetchUsers(
+        page: event.pageKey,
+        limit: _pageSize,
+        searchQuery: event.query,
+      );
+      
+      final isLastPage = posts.length < _pageSize;
+
+      if (event.pageKey == 1) {
+        emit(state.copyWith(
+          status: PostStatus.success,
+          postList: posts,
+          hasReachedMax: isLastPage,
+          currentPage: event.pageKey,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: PostStatus.success,
+          postList: [...state.postList, ...posts],
+          hasReachedMax: isLastPage,
+          currentPage: event.pageKey,
+        ));
+      }
+    } catch (error) {
+      emit(state.copyWith(
+        errorMessage: error.toString(),
+        status: PostStatus.failure,
+      ));
     }
   }
 }
